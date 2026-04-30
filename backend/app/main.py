@@ -22,6 +22,10 @@ def _error_payload(detail: str) -> dict[str, object]:
         "error": detail,
     }
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse:
