@@ -2,7 +2,7 @@ import type { Gate, RunCircuitResponse } from "../types";
 
 import { parseRunCircuitResponse } from "./parseRunResponse";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
 const RETRY_DELAY_MS = 1500;
 const MAX_ATTEMPTS = 2;
 

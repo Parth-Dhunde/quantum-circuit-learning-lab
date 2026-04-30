@@ -35,6 +35,7 @@ function normalizeProgress(raw: unknown): ProgressState {
 
 export function NotesPage() {
   const { user } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [open, setOpen] = useState<LearningModule["id"]>(LEARNING_MODULES[0]!.id);
   const [completionFlash, setCompletionFlash] = useState<LearningModule["id"] | null>(null);
   const [quizResetVersion, setQuizResetVersion] = useState<Partial<Record<LearningModule["id"], number>>>({});
@@ -129,8 +130,15 @@ export function NotesPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
-        <aside className={`glass-card p-4 lg:sticky ${sidebarTopClass} lg:h-[calc(100vh-4.5rem)] lg:overflow-y-auto`}>
+      <div className="flex flex-col gap-6 lg:flex-row transition-all duration-300">
+        <aside
+          className={[
+            `glass-card p-4 transition-all duration-300 lg:sticky ${sidebarTopClass} lg:h-[calc(100vh-4.5rem)] lg:overflow-y-auto`,
+            sidebarOpen
+              ? "w-full opacity-100 lg:w-64"
+              : "max-h-0 w-0 overflow-hidden p-0 opacity-0 pointer-events-none lg:max-h-[calc(100vh-4.5rem)]",
+          ].join(" ")}
+        >
           <p className="text-xs font-semibold uppercase tracking-wide text-ds-muted">Topics</p>
           <div className="mt-3 flex flex-col gap-1">
             {LEARNING_MODULES.map((m, idx) => {
@@ -169,7 +177,12 @@ export function NotesPage() {
           </div>
         </aside>
 
-        <section className="flex flex-col gap-6">
+        <section className="flex w-full flex-1 flex-col gap-6 transition-all duration-300">
+          <div className="flex items-start">
+            <button type="button" className="btn-ghost px-4 py-2 text-sm" onClick={() => setSidebarOpen((prev) => !prev)}>
+              {sidebarOpen ? "Hide Topics" : "Show Topics"}
+            </button>
+          </div>
           <div key={active.id} className="glass-card p-6 transition-[opacity,transform] duration-300 sm:p-8">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
