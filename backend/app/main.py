@@ -22,11 +22,6 @@ def _error_payload(detail: str) -> dict[str, object]:
         "error": detail,
     }
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_: Request, exc: HTTPException) -> JSONResponse:
     detail = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
@@ -43,23 +38,15 @@ _ALLOWED_TYPES = frozenset({"H", "X", "Y", "Z", "CX", "RX", "RZ"})
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost",
-        "http://127.0.0.1",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
 @app.get("/health")
+@app.get("/api/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
@@ -148,9 +135,9 @@ def _format_validation_error(err: ValidationError) -> str:
     return "; ".join(parts)
 
 
-@app.post("/run-circuit", response_model=RunCircuitResponse)
-def run_circuit_endpoint(body: dict = Body(...)) -> RunCircuitResponse | JSONResponse:
+def _run_circuit_impl(body: dict) -> RunCircuitResponse | JSONResponse:
     """Always respond with JSON, including unexpected failures."""
+    print("API hit: /run-circuit")
     try:
         req = _parse_run_body(body)
         try:
@@ -174,3 +161,9 @@ def run_circuit_endpoint(body: dict = Body(...)) -> RunCircuitResponse | JSONRes
         raise
     except Exception as e:  # noqa: BLE001
         return JSONResponse(status_code=500, content=_error_payload(f"Simulation failed: {str(e)}"))
+
+
+@app.post("/run-circuit", response_model=RunCircuitResponse)
+@app.post("/api/run-circuit", response_model=RunCircuitResponse)
+def run_circuit_endpoint(body: dict = Body(...)) -> RunCircuitResponse | JSONResponse:
+    return _run_circuit_impl(body)
