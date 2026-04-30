@@ -161,6 +161,16 @@ body {
   }
 }
 
+@keyframes bloch-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
 .home-aurora {
   background:
     radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.22), transparent 45%),

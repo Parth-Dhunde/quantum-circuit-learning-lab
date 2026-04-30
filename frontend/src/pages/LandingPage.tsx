@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthProvider";
 
-const QuantumMascot = lazy(() => import("../components/ui/QuantumMascot"));
+const QuantumBlochSphere = lazy(() => import("../components/ui/QuantumBlochSphere"));
 
 export function LandingPage() {
   const { user } = useAuth();
@@ -40,10 +40,10 @@ export function LandingPage() {
           <div className="flex items-center justify-center lg:justify-end">
             <Suspense
               fallback={
-                <div className="h-[200px] w-[200px] rounded-full bg-[radial-gradient(circle_at_40%_35%,#1e293b,#020617)] sm:h-[240px] sm:w-[240px] lg:h-[280px] lg:w-[280px]" />
+                <div className="h-[200px] w-[200px] rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(129,140,248,0.65),rgba(124,58,237,0.85))] sm:h-[240px] sm:w-[240px] lg:h-[280px] lg:w-[280px]" />
               }
             >
-              <QuantumMascot />
+              <QuantumBlochSphere />
             </Suspense>
           </div>
         </div>
