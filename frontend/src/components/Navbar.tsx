@@ -36,6 +36,7 @@ export function Navbar() {
       <div className="mx-auto w-full max-w-[1200px] px-4 py-3 sm:px-6 lg:px-8 xl:max-w-[1400px] 2xl:max-w-[1600px]">
         <div className="glass-card flex items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-[150px] items-center gap-3">
+            <img src="/logo.svg" alt="Quantum Lab Logo" className="h-6 w-6 sm:h-8 sm:w-8" />
             <span className="text-lg font-semibold uppercase tracking-[0.36em] text-ds-accent sm:text-xl dark:text-accent-glow">
               Quantum Lab
             </span>
