@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 import re
 
+from urllib.parse import urlparse
+
 from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,15 +44,41 @@ _DEFAULT_CORS_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://quantum-circuit-learning-lab.vercel.app",
 ]
 
 
+def _normalize_origin(origin: str) -> str:
+    """CORS origins are scheme + host (+ port) only — never paths."""
+    trimmed = origin.strip()
+    if not trimmed:
+        return ""
+    parsed = urlparse(trimmed)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme}://{parsed.netloc}"
+    return trimmed
+
+
 def _cors_origins() -> list[str]:
-    """Comma-separated origins via CORS_ORIGINS; defaults to local dev hosts."""
-    raw = os.environ.get("CORS_ORIGINS", "").strip()
-    if raw:
-        return [origin.strip() for origin in raw.split(",") if origin.strip()]
-    return _DEFAULT_CORS_ORIGINS
+    """Merge built-in defaults with optional comma-separated CORS_ORIGINS env."""
+    seen: set[str] = set()
+    origins: list[str] = []
+
+    def add(raw: str) -> None:
+        normalized = _normalize_origin(raw)
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            origins.append(normalized)
+
+    for default in _DEFAULT_CORS_ORIGINS:
+        add(default)
+
+    env_raw = os.environ.get("CORS_ORIGINS", "").strip()
+    if env_raw:
+        for part in env_raw.split(","):
+            add(part)
+
+    return origins
 
 
 app.add_middleware(
