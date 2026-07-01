@@ -61,6 +61,7 @@ npm run dev
 ```bash
 cd backend
 pip install -r requirements.txt
+source qenv/bin/activate   
 uvicorn app.main:app --reload
 ```
 

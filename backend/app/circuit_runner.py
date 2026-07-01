@@ -1,5 +1,3 @@
-"""Build Qiskit circuits, simulate with Aer, and format outputs."""
-
 from __future__ import annotations
 
 from io import StringIO

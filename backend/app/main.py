@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 
 from fastapi import Body, FastAPI, HTTPException, Request
@@ -36,12 +37,28 @@ async def unhandled_exception_handler(_: Request, exc: Exception) -> JSONRespons
 
 _ALLOWED_TYPES = frozenset({"H", "X", "Y", "Z", "CX", "RX", "RZ"})
 
+_DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+
+def _cors_origins() -> list[str]:
+    """Comma-separated origins via CORS_ORIGINS; defaults to local dev hosts."""
+    raw = os.environ.get("CORS_ORIGINS", "").strip()
+    if raw:
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
+    return _DEFAULT_CORS_ORIGINS
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins(),
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Accept"],
 )
 
 

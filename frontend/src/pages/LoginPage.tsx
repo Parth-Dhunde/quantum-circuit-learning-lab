@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../auth/AuthProvider";
+import { PasswordInput } from "../components/PasswordInput";
 
 type NavLocationState = {
   from?: {
@@ -43,7 +44,11 @@ export function LoginPage() {
     setError("");
     setBusy(true);
     try {
-      await loginWithGoogle();
+      const result = await loginWithGoogle();
+      if (result.redirected) {
+        setError("Popup was blocked. Redirecting to Google sign-in...");
+        return;
+      }
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
@@ -74,18 +79,23 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              autoComplete="email"
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-ds-secondary">
-            Password
-            <input
-              type="password"
-              required
-              minLength={6}
-              className="field-input"
+            <span className="flex items-center justify-between">
+              Password
+              <Link to="/forgot-password" className="text-ds-accent hover:underline">
+                Forgot password?
+              </Link>
+            </span>
+            <PasswordInput
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
               placeholder="••••••••"
+              minLength={6}
+              required
+              autoComplete="current-password"
             />
           </label>
           <button type="submit" className="btn-accent w-full py-2.5" disabled={busy}>

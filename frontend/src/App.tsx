@@ -12,6 +12,7 @@ import { NotesPage } from "./pages/NotesPage";
 import { QuizPage } from "./pages/QuizPage";
 import { QuizSessionPage } from "./pages/QuizSessionPage";
 import { SimulationPage } from "./pages/SimulationPage";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage";
 import { SignupPage } from "./pages/SignupPage";
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/home" element={<Navigate to="/simulation" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/simulation" element={<ProtectedRoute><SimulationPage /></ProtectedRoute>} />
         <Route path="/notes" element={<ProtectedRoute><NotesPage /></ProtectedRoute>} />
         <Route path="/test" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
